@@ -1,5 +1,5 @@
 import dummy_profile from "./dummy_profile.png";
-interface PersonalInfo {
+export interface PersonalInfo {
   full_name: string;
   email: string;
   phone: string;
@@ -10,7 +10,7 @@ interface PersonalInfo {
   image: string; // assuming dummy_profile is a string (URL or path)
 }
 
-interface Experience {
+export interface Experience {
   company: string;
   position: string;
   start_date: string;
@@ -20,7 +20,7 @@ interface Experience {
   _id: string;
 }
 
-interface Education {
+export interface Education {
   institution: string;
   degree: string;
   field: string;
@@ -29,14 +29,14 @@ interface Education {
   _id: string;
 }
 
-interface Project {
+export interface Project {
   name: string;
   type: string;
   description: string;
   _id: string;
 }
 
-interface Resume {
+export interface Resume {
   personal_info: PersonalInfo;
   _id: string;
   userId: string;
