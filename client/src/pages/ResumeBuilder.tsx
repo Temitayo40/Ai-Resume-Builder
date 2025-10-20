@@ -11,12 +11,21 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { dummyResumeData } from "../assets/assets";
+import {
+  dummyResumeData,
+  type Education,
+  type Experience,
+  type PersonalInfo,
+  type Project,
+  type Resume,
+} from "../assets/assets";
 import PersonalInfoForm from "../components/PersonalInfoForm";
+import ResumePreview from "../components/ResumePreview";
+import TemplateSelector from "../components/TemplateSelector";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
-  const [resumeData, setResumeData] = useState<any>({
+  const [resumeData, setResumeData] = useState<Resume>({
     _id: "",
     title: "",
     personal_info: {},
@@ -74,7 +83,7 @@ const ResumeBuilder = () => {
         <div className="grid lg:grid-cols-12 gap-8">
           {/* left panel */}
           <div className="relative lg:col-span-5 rounded-lg overflow-hidden">
-            <div className="bg-white rounded-lg shadow-smm border border-gray-200 p-6 pt-1">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 pt-1">
               {/* progress bar */}
               <hr className="absolute top-0 left-0 right-0 border-2 border-gray-200" />
 
@@ -87,8 +96,16 @@ const ResumeBuilder = () => {
                 }}
               />
 
+              {/* section navigation */}
               <div className="flex justify-between items-center mb-6 border-b border-gray-300 py-1">
-                <div></div>
+                <div className="flex justify-between items-center mb-6 border-b border-gray-300 py-1">
+                  <TemplateSelector
+                    selectedTemplate={resumeData.template}
+                    onChange={(template: any) =>
+                      setResumeData((prev) => ({ ...prev, template }))
+                    }
+                  />
+                </div>
                 <div className="flex items-center">
                   {activeSectionIndex !== 0 && (
                     <button
@@ -139,7 +156,15 @@ const ResumeBuilder = () => {
           </div>
 
           {/* right panel */}
-          <div></div>
+          <div className="lg:col-span-7 max-lg:mt-6">
+            <div>{/* btns */}</div>
+            {/*  resume preview */}
+            <ResumePreview
+              data={resumeData}
+              template={resumeData.template}
+              accentColor={resumeData.accent_color}
+            />
+          </div>
         </div>
       </div>
     </div>

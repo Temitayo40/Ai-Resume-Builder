@@ -29,13 +29,13 @@ const Dashboard = () => {
   const createResume = async (event: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
     SetShowCreateResume(false);
-    navigate("app/builder/res133");
+    navigate("/app/builder/res133");
   };
 
   const uploadResume = async (event: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
     SetShowUploadResume(false);
-    navigate("app/builder/res133");
+    navigate("/app/builder/res133");
   };
   const editResume = async (event: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -140,6 +140,7 @@ const Dashboard = () => {
         })}
       </div>
 
+      {/* create rsume modals */}
       {showCreateResume && (
         <form
           onSubmit={createResume}
@@ -171,6 +172,8 @@ const Dashboard = () => {
           </div>
         </form>
       )}
+
+      {/* upload resume modal */}
       {showUploadResume && (
         <form
           onSubmit={uploadResume}
