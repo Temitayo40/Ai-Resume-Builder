@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { dummyResumeData, type Resume } from "../assets/assets";
 import {
   ArrowLeftIcon,
   Briefcase,
@@ -12,6 +9,10 @@ import {
   Sparkles,
   User,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { dummyResumeData } from "../assets/assets";
+import PersonalInfoForm from "../components/PersonalInfoForm";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
@@ -116,6 +117,23 @@ const ResumeBuilder = () => {
                     Next <ChevronRight className="size-4" />
                   </button>
                 </div>
+              </div>
+
+              {/* form content */}
+              <div className="space-y-6">
+                {activeSection.id === "personal" && (
+                  <PersonalInfoForm
+                    data={resumeData.personal_info}
+                    onChange={(data: any) =>
+                      setResumeData((prev: any) => ({
+                        ...prev,
+                        personal_info: data,
+                      }))
+                    }
+                    removeBackground={removeBackground}
+                    setRemoveBackground={setRemoveBackground}
+                  />
+                )}
               </div>
             </div>
           </div>
