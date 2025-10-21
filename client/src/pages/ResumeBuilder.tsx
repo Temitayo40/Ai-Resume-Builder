@@ -11,20 +11,14 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-  dummyResumeData,
-  type Education,
-  type Experience,
-  type PersonalInfo,
-  type Project,
-  type Resume,
-} from "../assets/assets";
+import { dummyResumeData, type Resume } from "../assets/assets";
+import ColorPicker from "../components/ColorPicker";
+import ExperienceForm from "../components/ExperienceForm";
 import PersonalInfoForm from "../components/PersonalInfoForm";
+import ProfessionalSummaryForm from "../components/ProfessionalSummaryForm";
 import ResumePreview from "../components/ResumePreview";
 import TemplateSelector from "../components/TemplateSelector";
-import ColorPicker from "../components/ColorPicker";
-import ProfessionalSummaryForm from "../components/ProfessionalSummaryForm";
-import ExperienceForm from "../components/ExperienceForm";
+import EducationForm from "../components/EducationForm";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
@@ -184,6 +178,17 @@ const ResumeBuilder = () => {
                       setResumeData((prev) => ({
                         ...prev,
                         experience: data,
+                      }))
+                    }
+                  />
+                )}
+                {activeSection.id === "education" && (
+                  <EducationForm
+                    data={resumeData.education}
+                    onChange={(data) =>
+                      setResumeData((prev) => ({
+                        ...prev,
+                        education: data,
                       }))
                     }
                   />
