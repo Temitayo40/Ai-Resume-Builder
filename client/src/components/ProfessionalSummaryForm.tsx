@@ -1,10 +1,11 @@
 import { Sparkles } from "lucide-react";
 import React from "react";
+import type { ResumeData } from "../assets/assets";
 
 interface ProfessionalSummaryFormProps {
   data: string;
   onChange: (value: string) => void;
-  setResumeData: React.Dispatch<React.SetStateAction<any>>;
+  setResumeData: React.Dispatch<React.SetStateAction<ResumeData>>;
 }
 
 const ProfessionalSummaryForm = ({

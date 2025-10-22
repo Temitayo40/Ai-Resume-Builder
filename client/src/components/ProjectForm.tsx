@@ -1,7 +1,8 @@
 import { Plus, Trash2 } from "lucide-react";
+import type { Project } from "../assets/assets";
 interface ProjectFormProps {
-  data: any;
-  onChange: (value: any) => void;
+  data: Project[];
+  onChange: (value: Project[]) => void;
 }
 const ProjectForm = ({ data, onChange }: ProjectFormProps) => {
   const addProject = () => {
@@ -15,7 +16,9 @@ const ProjectForm = ({ data, onChange }: ProjectFormProps) => {
   };
 
   const removeProject = (index: number) => {
-    const removeExperience = data.filter((_: string, i: number) => i !== index);
+    const removeExperience = data.filter(
+      (_: Project, i: number) => i !== index
+    );
     onChange(removeExperience);
   };
 
@@ -24,7 +27,7 @@ const ProjectForm = ({ data, onChange }: ProjectFormProps) => {
     field: string,
     value: string | boolean
   ) => {
-    const updated = [...data] as any[];
+    const updated = [...data];
     updated[index] = { ...updated[index], [field]: value };
     onChange(updated);
   };
@@ -48,7 +51,7 @@ const ProjectForm = ({ data, onChange }: ProjectFormProps) => {
       </div>
 
       <div className="space-y-4">
-        {data.map((project: any, index: number) => (
+        {data.map((project, index) => (
           <div
             key={index}
             className="p-4 border border-gray-200 rounded-lg space-y-3"
@@ -84,7 +87,7 @@ const ProjectForm = ({ data, onChange }: ProjectFormProps) => {
                 onChange={(e) =>
                   updateProject(index, "desription", e.target.value)
                 }
-                placeholder="DEscribe your project..."
+                placeholder="Describe your project..."
                 className="px-3 py-2 text-sm rounded-lg resize-none"
               />
             </div>

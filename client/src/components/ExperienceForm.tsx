@@ -1,8 +1,8 @@
 import { Briefcase, Plus, Sparkles, Trash2 } from "lucide-react";
-import React from "react";
+import type { Experience } from "../assets/assets";
 interface ExperienceFormProps {
-  data: any;
-  onChange: (value: any) => void;
+  data: Experience[];
+  onChange: (value: Experience[]) => void;
 }
 const ExperienceForm = ({ data = [], onChange }: ExperienceFormProps) => {
   const addExperience = () => {
@@ -19,7 +19,9 @@ const ExperienceForm = ({ data = [], onChange }: ExperienceFormProps) => {
   };
 
   const removeExperience = (index: number) => {
-    const removeExperience = data.filter((_: string, i: number) => i !== index);
+    const removeExperience = data.filter(
+      (_: Experience, i: number) => i !== index
+    );
     onChange(removeExperience);
   };
   const updateExperience = (
@@ -27,7 +29,7 @@ const ExperienceForm = ({ data = [], onChange }: ExperienceFormProps) => {
     field: string,
     value: string | boolean
   ) => {
-    const updated = [...data] as any[];
+    const updated = [...data];
     updated[index] = { ...updated[index], [field]: value };
     onChange(updated);
   };
@@ -58,7 +60,7 @@ const ExperienceForm = ({ data = [], onChange }: ExperienceFormProps) => {
         </div>
       ) : (
         <div className="space-y-4">
-          {data.map((experience: any, index: number) => (
+          {data.map((experience, index) => (
             <div
               key={index}
               className="p-4 border border-gray-200 rounded-lg space-y-3"

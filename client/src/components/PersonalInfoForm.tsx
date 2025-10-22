@@ -8,19 +8,17 @@ import {
   User,
 } from "lucide-react";
 import React from "react";
+import type { PersonalInfo } from "../assets/assets";
 
 interface PersonalInfoFormProps {
-  data: {
-    image: File | string | null;
-    [key: string]: any;
-  };
-  onChange: (data: any) => void;
+  data: PersonalInfo;
+  onChange: (data: PersonalInfo) => void;
   removeBackground: boolean;
   setRemoveBackground: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface Field {
-  key: string;
+  key: keyof PersonalInfo;
   label: string;
   icon: React.ComponentType<any>;
   type: string;
@@ -33,8 +31,11 @@ const PersonalInfoForm = ({
   removeBackground,
   setRemoveBackground,
 }: PersonalInfoFormProps) => {
-  const handleChange = (field: any, value: any) => {
-    onChange({ ...data, [field]: value });
+  const handleChange = <K extends keyof PersonalInfo>(
+    field: K,
+    value: PersonalInfo[K]
+  ) => {
+    onChange({ ...data, [field]: value } as PersonalInfo);
   };
 
   const fields: Field[] = [
@@ -78,7 +79,7 @@ const PersonalInfoForm = ({
       type: "url",
     },
     {
-      key: "wedsite",
+      key: "website",
       label: "Personal Website",
       icon: Globe,
       type: "url",
@@ -116,7 +117,7 @@ const PersonalInfoForm = ({
             accept="image/jpeg, image/png"
             className="hidden"
             id="user-image"
-            onChange={(e) => handleChange("image", e.target.files?.[0])}
+            onChange={(e) => handleChange("image", e.target.files?.[0] as any)}
           />
         </label>
 
@@ -149,7 +150,7 @@ const PersonalInfoForm = ({
 
             <input
               type={field.type}
-              value={data[field.key] || ""}
+              value={(data[field.key] as unknown as string) || ""}
               onChange={(e) => handleChange(field.key, e.target.value)}
               className="mt-1 w-full px-3 py-2 border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
               placeholder={`Enter your ${field.label.toLowerCase()}`}

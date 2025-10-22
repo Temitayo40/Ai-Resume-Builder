@@ -1,15 +1,7 @@
 import { Mail, Phone, MapPin } from "lucide-react";
+import { formatDate, type TemplateProps } from "../../assets/assets";
 
-const MinimalImageTemplate = ({ data, accentColor }) => {
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "";
-    const [year, month] = dateStr.split("-");
-    return new Date(year, month - 1).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-    });
-  };
-
+const MinimalImageTemplate = ({ data, accentColor }: TemplateProps) => {
   return (
     <div className="max-w-5xl mx-auto bg-white text-zinc-800">
       <div className="grid grid-cols-3">

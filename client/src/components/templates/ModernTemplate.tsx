@@ -1,20 +1,7 @@
-import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
-import type { Resume } from "../../assets/assets";
-interface ModernTemplateProps {
-  data: Resume;
-  accentColor: string;
-}
+import { Globe, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { formatDate, type TemplateProps } from "../../assets/assets";
 
-const ModernTemplate = ({ data, accentColor }: ModernTemplateProps) => {
-  const formatDate = (dateStr: any) => {
-    if (!dateStr) return "";
-    const [year, month] = dateStr.split("-");
-    return new Date(year, month - 1).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-    });
-  };
-
+const ModernTemplate = ({ data, accentColor }: TemplateProps) => {
   return (
     <div className="max-w-4xl mx-auto bg-white text-gray-800">
       {/* Header */}

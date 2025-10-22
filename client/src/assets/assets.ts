@@ -7,7 +7,7 @@ export interface PersonalInfo {
   linkedin: string;
   website: string;
   profession: string;
-  image: string; // assuming dummy_profile is a string (URL or path)
+  image: File | string | null;
 }
 
 export interface Experience {
@@ -17,7 +17,7 @@ export interface Experience {
   end_date: string;
   description: string;
   is_current: boolean;
-  _id: string;
+  _id?: string;
 }
 
 export interface Education {
@@ -26,14 +26,14 @@ export interface Education {
   field: string;
   graduation_date: string;
   gpa: string;
-  _id: string;
+  _id?: string;
 }
 
 export interface Project {
   name: string;
   type: string;
   description: string;
-  _id: string;
+  _id?: string;
 }
 
 export interface Resume {
@@ -52,6 +52,37 @@ export interface Resume {
   updatedAt: string;
   createdAt: string;
 }
+
+export interface ResumeData {
+  _id: string;
+  title: string;
+  personal_info: PersonalInfo;
+  professional_summary: string;
+  experience: Experience[];
+  education: Education[];
+  project: Project[];
+  skills: string[];
+  template: string;
+  accent_color: string;
+  public: boolean;
+}
+
+export interface TemplateProps {
+  data: ResumeData;
+  accentColor: string;
+}
+
+export const formatDate = (dataStr: string) => {
+  if (!dataStr) return "";
+  const [year, month] = dataStr.split("-");
+  const y = parseInt(year, 10);
+  const m = parseInt(month, 10);
+
+  return new Date(y, m - 1).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+  });
+};
 
 export const dummyResumeData: Resume[] = [
   {

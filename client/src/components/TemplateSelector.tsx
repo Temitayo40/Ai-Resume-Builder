@@ -1,7 +1,13 @@
 import { Check, Layout } from "lucide-react";
 import React from "react";
-
-const TemplateSelector = ({ selectedTemplate, onChange }) => {
+interface TemplateSelectorProps {
+  selectedTemplate: string;
+  onChange: (templateId: string) => void;
+}
+const TemplateSelector = ({
+  selectedTemplate,
+  onChange,
+}: TemplateSelectorProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const templates = [

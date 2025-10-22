@@ -1,7 +1,8 @@
 import { GraduationCap, Plus, Trash2 } from "lucide-react";
+import type { Education } from "../assets/assets";
 interface ExperienceFormProps {
-  data: any;
-  onChange: (value: any) => void;
+  data: Education[];
+  onChange: (value: Education[]) => void;
 }
 const EducationForm = ({ data = [], onChange }: ExperienceFormProps) => {
   const addEducation = () => {
@@ -17,7 +18,9 @@ const EducationForm = ({ data = [], onChange }: ExperienceFormProps) => {
   };
 
   const removeEducation = (index: number) => {
-    const removeExperience = data.filter((_: string, i: number) => i !== index);
+    const removeExperience = data.filter(
+      (_: Education, i: number) => i !== index
+    );
     onChange(removeExperience);
   };
 
@@ -26,7 +29,7 @@ const EducationForm = ({ data = [], onChange }: ExperienceFormProps) => {
     field: string,
     value: string | boolean
   ) => {
-    const updated = [...data] as any[];
+    const updated = [...data];
     updated[index] = { ...updated[index], [field]: value };
     onChange(updated);
   };
@@ -55,7 +58,7 @@ const EducationForm = ({ data = [], onChange }: ExperienceFormProps) => {
         </div>
       ) : (
         <div className="space-y-4">
-          {data.map((education: any, index: number) => (
+          {data.map((education, index) => (
             <div
               key={index}
               className="p-4 border border-gray-200 rounded-lg space-y-3"
@@ -110,7 +113,7 @@ const EducationForm = ({ data = [], onChange }: ExperienceFormProps) => {
 
               <input
                 type="text"
-                checked={education.gpa}
+                checked={education.gpa ? true : false}
                 onChange={(e) => {
                   updateEducation(index, "gpa", e.target.value);
                 }}

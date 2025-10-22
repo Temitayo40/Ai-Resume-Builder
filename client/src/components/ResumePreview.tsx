@@ -1,12 +1,11 @@
-import React from "react";
-import ModernTemplate from "./templates/ModernTemplate";
-import MinimalTemplate from "./templates/MinimalTemplate";
-import MinimalImageTemplate from "./templates/MinimalImageTemplate";
+import type { ResumeData } from "../assets/assets";
 import ClassicTemplate from "./templates/ClassicTemplate";
-import type { Resume } from "../assets/assets";
+import MinimalImageTemplate from "./templates/MinimalImageTemplate";
+import MinimalTemplate from "./templates/MinimalTemplate";
+import ModernTemplate from "./templates/ModernTemplate";
 
 interface ResumePreviewProps {
-  data: Resume;
+  data: ResumeData;
   template: string;
   accentColor: string;
   classes?: string;
