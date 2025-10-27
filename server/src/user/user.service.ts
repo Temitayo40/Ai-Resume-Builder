@@ -90,4 +90,11 @@ export class UserService {
 
     return safeUser;
   }
+
+  async getUserResumes(userId: string) {
+    const resumes = await this.prisma.resume.findMany({
+      where: { userId },
+    });
+    return resumes;
+  }
 }

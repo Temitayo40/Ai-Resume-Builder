@@ -51,4 +51,17 @@ export class UserController {
       throw new BadRequestException(error.message);
     }
   }
+
+  @Get('resumes')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  async getUserResumes(@Req() req: AuthRequest) {
+    const userId = req.userId as string;
+    try {
+      const user = await this.userService.getUserResumes(userId);
+      return user;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 }

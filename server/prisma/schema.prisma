@@ -21,6 +21,73 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  resumes Resume[]
 }
 
+model Resume {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  title String @default("Untitled Resume")
+  public Boolean @default(false)
+  template String @default("classic")
+  accent_color String @default("#3B82F6")
+  professional_summary  String @default("")
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  skills String[]
+  personal_info PersonalInfo?
+  experience Experience[]
+  projects Project[]
+  education Education[]
+
+}
+
+model PersonalInfo {
+  id          String  @id @default(cuid())
+  resumeId    String  @unique
+  resume      Resume  @relation(fields: [resumeId], references: [id])
+  image       String  @default("")
+  full_name    String  @default("")
+  profession  String  @default("")
+  email       String  @default("")
+  phone       String  @default("")
+  location    String  @default("")
+  linkedin    String  @default("")
+  website     String  @default("")
+}
+
+model Experience {
+  id          String  @id @default(cuid())
+  resumeId    String
+  resume      Resume  @relation(fields: [resumeId], references: [id])
+  company     String
+  position    String
+  start_date   String
+  end_date     String
+  description String
+  is_current   Boolean @default(false)
+}
+
+model Project {
+  id          String  @id @default(cuid())
+  resumeId    String
+  resume      Resume  @relation(fields: [resumeId], references: [id])
+  name        String
+  type        String
+  description String
+}
+
+model Education {
+  id              String  @id @default(cuid())
+  resumeId        String
+  resume          Resume  @relation(fields: [resumeId], references: [id])
+  institution     String
+  degree          String
+  field           String
+  graduation_date  String
+  gpa             String
+}
