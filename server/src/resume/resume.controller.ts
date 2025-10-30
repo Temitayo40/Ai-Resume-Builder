@@ -37,9 +37,15 @@ export class ResumeController {
       const newResume = await this.resumeService.createResume(userId, title);
       return { message: 'Resume Created Successfully', resume: newResume };
     } catch (error: any) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error occurred creating resumes',
+      );
     }
   }
+
   @Get('get/:resumeId')
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
@@ -56,6 +62,7 @@ export class ResumeController {
       throw new BadRequestException(error.message);
     }
   }
+
   @Get('public/:resumeId')
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
@@ -65,7 +72,12 @@ export class ResumeController {
 
       return { resume };
     } catch (error: any) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error occurred getting public resumes',
+      );
     }
   }
 
@@ -103,7 +115,12 @@ export class ResumeController {
 
       return { resume };
     } catch (error: any) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error occurred updating resumes',
+      );
     }
   }
 
@@ -120,7 +137,12 @@ export class ResumeController {
       await this.resumeService.deleteResume(userId, resumeId);
       return { message: 'Resume Deletes Successfully' };
     } catch (error: any) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error occurred deleting resumes',
+      );
     }
   }
 }

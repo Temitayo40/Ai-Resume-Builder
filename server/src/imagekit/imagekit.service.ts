@@ -1,7 +1,19 @@
 // src/imagekit/imagekit.service.ts
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { imagekit } from './imagekit.config';
-
+interface ImageKitClient {
+  upload: (options: {
+    file: Buffer | string;
+    fileName: string;
+    folder?: string;
+    transformation?: any;
+  }) => Promise<{
+    url: string;
+    fileId: string;
+    name: string;
+  }>;
+  deleteFile: (fileId: string) => Promise<any>;
+}
 @Injectable()
 export class ImagekitService {
   async uploadFile(file: Express.Multer.File, removeBackground: boolean) {
@@ -23,7 +35,12 @@ export class ImagekitService {
         name: uploadResponse.name,
       };
     } catch (error) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error occurred during upload',
+      );
     }
   }
 
@@ -32,7 +49,12 @@ export class ImagekitService {
       const deleteResponse = await imagekit.deleteFile(fileId);
       return deleteResponse;
     } catch (error) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error occurred during upload',
+      );
     }
   }
 }

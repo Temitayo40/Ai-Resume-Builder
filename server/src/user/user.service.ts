@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/database/prisma.service';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -44,7 +44,8 @@ export class UserService {
       },
     });
 
-    const token = this.generateToken(newUser.id) as string;
+    const token = this.generateToken(newUser.id);
+    console.log(token, 'token');
 
     const { password, ...safeUser } = newUser;
 
@@ -70,7 +71,7 @@ export class UserService {
       throw new BadRequestException('Invalid email or password');
     }
 
-    const token = this.generateToken(user.id) as string;
+    const token = this.generateToken(user.id);
 
     const { password, ...safeUser } = user;
 

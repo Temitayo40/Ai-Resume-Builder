@@ -22,9 +22,14 @@ export class UserController {
   ) {
     try {
       const { token, safeUser } = await this.userService.registerUser(body);
-      return { message: 'User Created Successfully', token, safeUser };
+      return { message: 'User Created Successfully', token, iser: safeUser };
     } catch (error: any) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error occurred during registration',
+      );
     }
   }
 
@@ -33,12 +38,18 @@ export class UserController {
   async Login(@Body() body: { email: string; password: string }) {
     try {
       const { token, safeUser } = await this.userService.Login(body);
-      return { message: 'User Created Successfully', token, safeUser };
+      return { message: 'User Created Successfully', token, user: safeUser };
     } catch (error: any) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error occurred during login',
+      );
     }
   }
 
+  // this is getting data for the loggen in user
   @Get('data')
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
@@ -48,10 +59,16 @@ export class UserController {
       const user = await this.userService.getUserById(userId);
       return user;
     } catch (error) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error: cannot get user by id',
+      );
     }
   }
 
+  // resumes attached to the logged in user
   @Get('resumes')
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
@@ -61,7 +78,12 @@ export class UserController {
       const user = await this.userService.getUserResumes(userId);
       return user;
     } catch (error) {
-      throw new BadRequestException(error.message);
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException(
+        'An unexpected error occurred getting resumes',
+      );
     }
   }
 }

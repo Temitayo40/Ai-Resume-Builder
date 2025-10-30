@@ -20,13 +20,17 @@ export class ResumeService {
     });
   }
   async getResumeById(userId: string, resumeId: string) {
-    const resume = await this.prisma.resume.findMany({
+    const resume = await this.prisma.resume.findFirst({
       where: { userId, id: resumeId },
     });
 
     if (!resume) throw new BadRequestException('Resume not found');
 
-    const { createdAt, updatedAt, ...cleanedResume } = resume;
+    const {
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
+      ...cleanedResume
+    } = resume;
 
     return cleanedResume;
   }
