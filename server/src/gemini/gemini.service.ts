@@ -46,80 +46,82 @@ export class GeminiService {
     return response.choices[0].message?.content;
   }
   async uploadResume(userId: string, resumeText: string, title: string) {
+    if (!userId || !resumeText || !title) {
+      throw new Error('Missing required parameters');
+    }
+
     const systemPrompt =
-      'You are an expert AI Agent to extract data from resume';
+      'You are an expert AI Agent trained to extract structured data from resumes.';
+    const userPrompt = `Extract data from this resume text:\n${resumeText}\n
+  Provide a valid JSON object only (no markdown or explanations), matching this structure:
 
-    const userPrompst = `extract data from this resume: ${resumeText} 
-      Provide data in the following JSON format with no additional text before or after:
-      
+  {
+    "professional_summary": "",
+    "skills": [],
+
+    "personal_info": {
+      "image": "",
+      "full_name": "",
+      "profession": "",
+      "email": "",
+      "phone": "",
+      "location": "",
+      "linkedin": "",
+      "website": ""
+    },
+
+    "experience": [
       {
-       professional_summary: { type: String, default: "" },
-       skills: [{ type: String }],
+        "company": "",
+        "position": "",
+        "start_date": "",
+        "end_date": "",
+        "description": "",
+        "is_current": false
+      }
+    ],
 
-        personal_info: {
-        image: { type: String, default: "" },
-        full_name: { type: String, default: "" },
-        profession: { type: String, default: "" },
-        email: { type: String, default: "" },
-        phone: { type: String, default: "" },
-        location: { type: String, default: "" },
-        linkedin: { type: String, default: "" },
-        website: { type: String, default: "" },
-        },
+    "projects": [
+      {
+        "name": "",
+        "type": "",
+        "description": ""
+      }
+    ],
 
-        experience: [
-        {
-            company: { type: String, required: true },
-            position: { type: String, required: true },
-            start_date: { type: String, required: true },
-            end_date: { type: String },
-            description: { type: String },
-            is_current: { type: Boolean, default: false },
-        },
-        ],
+    "education": [
+      {
+        "institution": "",
+        "degree": "",
+        "field": "",
+        "graduation_date": "",
+        "gpa": ""
+      }
+    ]
+  }`;
 
-        projects: [
-        {
-            name: { type: String, required: true },
-            type: { type: String },
-            description: { type: String },
-        },
-        ],
-
-        education: [
-        {
-            institution: { type: String, required: true },
-            degree: { type: String },
-            field: { type: String },
-            graduation_date: { type: String },
-            gpa: { type: String },
-        },
-        ],
-  },
-      `;
     const response = await this.openai.chat.completions.create({
       model: this.configService.get<string>('GEMINI_MODEL')!,
       messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        { role: 'user', content: userPrompst },
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
       ],
-      response_format: { type: 'json_object' },
     });
+
     const extractedData = response.choices[0].message?.content;
 
-    const parsedData = JSON.parse(extractedData);
+    let parsedData: any;
+    try {
+      parsedData = JSON.parse(extractedData ?? '{}');
+    } catch {
+      throw new Error('Invalid JSON format returned from Gemini');
+    }
 
     const newResume = await this.prisma.resume.create({
-      data: {
-        userId,
-        title,
-        ...parsedData,
-      },
+      data: { userId, title, ...parsedData },
     });
 
     return { resumeId: newResume.id };
   }
 }
+// response_format: { type: 'json_object' },

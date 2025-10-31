@@ -1,9 +1,14 @@
 import { Lock, Mail, User2Icon } from "lucide-react";
 import React from "react";
+import api from "../configs/api";
+import { useDispatch } from "react-redux";
+import { login } from "../app/features/authSlice";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const Login = () => {
   const query = new URLSearchParams(window.location.search);
-
+  const dispatch = useDispatch();
   const queryUrl = query.get("state");
 
   const [state, setState] = React.useState(queryUrl || "login");
@@ -15,6 +20,19 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      const { data } = await api.post(`/api/users/${state}`, formData);
+      dispatch(login(data));
+      localStorage.setItem("token", data.token);
+      toast.success(data.message);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const backendMessage = error.response?.data?.message;
+        toast.error(backendMessage || "An unexpected error occurred");
+      } else {
+        toast.error("Something went wrong");
+      }
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -20,7 +20,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ImagekitService } from 'src/imagekit/imagekit.service';
 import { ResumeService } from './resume.service';
 
-@Controller('resumes')
+@Controller('api/resumes')
 export class ResumeController {
   constructor(
     private resumeService: ResumeService,

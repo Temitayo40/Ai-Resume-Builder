@@ -12,7 +12,7 @@ import { UserService } from './user.service';
 import { AuthRequest } from 'src/auth/express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@Controller('users')
+@Controller('api/users/')
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post('register')

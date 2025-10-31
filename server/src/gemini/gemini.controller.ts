@@ -4,14 +4,17 @@ import {
   Controller,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { GeminiService } from './gemini.service';
 import { AuthRequest } from 'src/auth/express';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@Controller('ai')
+@Controller('api/ai')
 export class GeminiController {
   constructor(private readonly geminiService: GeminiService) {}
   @Post('enhance-pro-sum')
+  @UseGuards(JwtAuthGuard)
   async enhanceProfessionalSummary(@Body() body: { userContent: string }) {
     const { userContent } = body;
     if (userContent) throw new BadRequestException('Missing required fields');
@@ -31,6 +34,7 @@ export class GeminiController {
   }
 
   @Post('enhance-job-desc')
+  @UseGuards(JwtAuthGuard)
   async enhanceJobDescription(@Body() body: { userContent: string }) {
     const { userContent } = body;
     if (userContent) throw new BadRequestException('Missing required fields');
@@ -50,6 +54,7 @@ export class GeminiController {
   }
 
   @Post('upload-resume')
+  @UseGuards(JwtAuthGuard)
   async enhanceUploadResume(
     @Body() body: { resumeText: string; title: string },
     @Req() req: AuthRequest,
