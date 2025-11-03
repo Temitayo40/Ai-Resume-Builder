@@ -10,8 +10,16 @@ import {
 import React, { useEffect, useState } from "react";
 import { dummyResumeData, type Resume } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../app/store";
+import api from "../configs/api";
+import toast from "react-hot-toast";
+import axios from "axios";
+import pdfToText from "react-pdftotext";
 
 const Dashboard = () => {
+  const { user, token } = useSelector((state: RootState) => state.auth);
+
   const colors = ["#9333ea", "#d97706", "#dc2626", "#0284c7", "#16a34a"];
 
   const navigate = useNavigate();
@@ -19,24 +27,73 @@ const Dashboard = () => {
   const [showCreateResume, SetShowCreateResume] = useState<boolean>(false);
   const [showUploadResume, SetShowUploadResume] = useState<boolean>(false);
   const [title, setTitle] = useState("");
-  const [resume, setResume] = useState<File | null>(null);
+  const [resume, setResume] = useState<File | Blob | null>(null);
   const [editResumeId, setEditResumeId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const loadAllResumes = async () => {
     setAllResumes(dummyResumeData);
   };
 
   const createResume = async (event: React.FormEvent<HTMLFormElement>) => {
-    event?.preventDefault();
     SetShowCreateResume(false);
     navigate("/app/builder/res133");
+
+    try {
+      event?.preventDefault();
+      const { data } = await api.post(
+        "/api/resumes/create",
+        { title },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      setAllResumes([...allResumes, data.resume]);
+      setTitle("");
+      SetShowCreateResume(false);
+      navigate(`/app/builder/${data.resume.id}`);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const backendMessage = error.response?.data?.message;
+        toast.error(backendMessage || "An unexpected error occurred");
+      } else {
+        toast.error("Something went wrong");
+      }
+    }
   };
 
   const uploadResume = async (event: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
-    SetShowUploadResume(false);
-    navigate("/app/builder/res133");
+    setIsLoading(true);
+    try {
+      const resumeText = await pdfToText(resume);
+      const { data } = await api.post(
+        "/api/ai/upload-resume",
+        { title, resumeText },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      setTitle("");
+      setResume(null);
+      SetShowUploadResume(false);
+      navigate(`/app/builder/${data.resumeId}`);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const backendMessage = error.response?.data?.message;
+        toast.error(backendMessage || "An unexpected error occurred");
+      } else {
+        toast.error("Something went wrong");
+      }
+      setIsLoading(false);
+    }
   };
+
   const editResume = async (event: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
   };
