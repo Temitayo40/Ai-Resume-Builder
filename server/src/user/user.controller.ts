@@ -76,7 +76,7 @@ export class UserController {
     const userId = req.userId as string;
     try {
       const user = await this.userService.getUserResumes(userId);
-      return user;
+      return { resume: user };
     } catch (error) {
       if (error instanceof Error) {
         throw new BadRequestException(error.message);

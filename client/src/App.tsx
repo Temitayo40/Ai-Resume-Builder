@@ -17,10 +17,11 @@ function App() {
       if (token) {
         const { data } = await api.get("/api/users/data", {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         });
         if (data.user) {
+          console.log(data);
           dispatch(login({ token, user: data.user }));
         }
         dispatch(setLoading(false));

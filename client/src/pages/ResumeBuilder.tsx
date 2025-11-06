@@ -30,11 +30,17 @@ import ProjectForm from "../components/ProjectForm";
 import ResumePreview from "../components/ResumePreview";
 import SkillsForm from "../components/SkillsForm";
 import TemplateSelector from "../components/TemplateSelector";
+import { useSelector } from "react-redux";
+import type { RootState } from "../app/store";
+import api from "../configs/api";
+import AxiosError from "../configs/axiosError";
+import toast from "react-hot-toast";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
+  const { token } = useSelector((state: RootState) => state.auth);
   const initialResume: ResumeData = {
-    _id: "",
+    id: "",
     title: "",
     personal_info: {
       full_name: "",
@@ -59,11 +65,19 @@ const ResumeBuilder = () => {
   const [resumeData, setResumeData] = useState<ResumeData>(initialResume);
 
   const loadExistingResume = async () => {
-    const resume = dummyResumeData.find((resume) => resume._id === resumeId);
+    try {
+      const { data } = await api.get("/api/resumes/get" + resumeId, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (resume) {
-      setResumeData(resume);
-      document.title = resume.title;
+      if (data.resume) {
+        setResumeData(data.resume);
+        document.title = data.resume.title;
+      }
+    } catch (error) {
+      AxiosError(error);
     }
   };
 
@@ -86,8 +100,26 @@ const ResumeBuilder = () => {
     loadExistingResume();
   }, []);
 
-  const changeResumeVisibility = () => {
-    setResumeData({ ...resumeData, public: !resumeData.public });
+  const changeResumeVisibility = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("resumeId", resumeId as string);
+      formData.append(
+        "resumeData",
+        JSON.stringify({ public: !resumeData.public })
+      );
+
+      const { data } = await api.patch("/api/resumes/update" + formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setResumeData({ ...resumeData, public: !resumeData.public });
+      toast.success(data.message);
+    } catch (error) {
+      AxiosError(error);
+    }
   };
 
   const handleShare = () => {
@@ -99,6 +131,40 @@ const ResumeBuilder = () => {
 
   const downloadResume = () => {
     window.print();
+  };
+
+  const saveResume = async () => {
+    try {
+      const updatedResumeData = structuredClone(resumeData);
+      if (
+        typeof resumeData.personal_info.image === "object" &&
+        updatedResumeData.personal_info
+      ) {
+        // delete via a cast to any to avoid TypeScript delete operand restrictions
+        delete (updatedResumeData.personal_info as any).image;
+      }
+      const formData = new FormData();
+      formData.append("resumeId", resumeId as string);
+      formData.append("resumeData", JSON.stringify(updatedResumeData));
+
+      if (removeBackground) {
+        formData.append("removeBackground", "yes");
+      }
+      if (typeof resumeData.personal_info.image === "object") {
+        formData.append("image", resumeData.personal_info.image as any);
+      }
+
+      const { data } = await api.patch("/api/resumes/update", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setResumeData(data.resume);
+      toast.success(data.message);
+    } catch (error) {
+      AxiosError(error);
+    }
   };
 
   return (
@@ -253,7 +319,16 @@ const ResumeBuilder = () => {
                   />
                 )}
               </div>
-              <button className="bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-480 transition-all rounded-md px-6 py-2 mt-6 text-sm">
+              <button
+                onClick={() => {
+                  toast.promise(saveResume, {
+                    loading: "Saving...",
+                    success: "Done!",
+                    error: "Something went wrong",
+                  });
+                }}
+                className="bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-480 transition-all rounded-md px-6 py-2 mt-6 text-sm"
+              >
                 Save Changes
               </button>
             </div>

@@ -97,7 +97,7 @@ export class ResumeController {
   ) {
     const userId = req.userId as string;
     const { resumeId, resumeData, removeBackground } = body;
-    const resumeDataCopy = { ...resumeData };
+    const resumeDataCopy = JSON.parse(JSON.stringify(resumeData));
     try {
       if (file) {
         const response = await this.imagekitService.uploadFile(
@@ -113,7 +113,7 @@ export class ResumeController {
         resumeDataCopy,
       );
 
-      return { resume };
+      return { message: 'Resume Updated Successfully', resume };
     } catch (error: any) {
       if (error instanceof Error) {
         throw new BadRequestException(error.message);
@@ -135,7 +135,7 @@ export class ResumeController {
 
     try {
       await this.resumeService.deleteResume(userId, resumeId);
-      return { message: 'Resume Deletes Successfully' };
+      return { message: 'Resume Deleted Successfully' };
     } catch (error: any) {
       if (error instanceof Error) {
         throw new BadRequestException(error.message);
