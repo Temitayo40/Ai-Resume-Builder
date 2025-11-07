@@ -1,6 +1,10 @@
-import { Sparkles } from "lucide-react";
-import React from "react";
+import { Loader2, Sparkles } from "lucide-react";
+import React, { useState } from "react";
 import type { ResumeData } from "../assets/assets";
+import { useSelector } from "react-redux";
+import type { RootState } from "../app/store";
+import api from "../configs/api";
+import AxiosError from "../configs/axiosError";
 
 interface ProfessionalSummaryFormProps {
   data: string;
@@ -13,6 +17,35 @@ const ProfessionalSummaryForm = ({
   onChange,
   setResumeData,
 }: ProfessionalSummaryFormProps) => {
+  const { token } = useSelector((state: RootState) => state.auth);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // web developer with 6 years of experience building complex web apps using React JS, Node JS,
+  const generateSummarry = async () => {
+    try {
+      setIsGenerating(true);
+      const prompt = `enhance my professional summary "${data}"`;
+      const response = await api.post(
+        "/api/ai/enhance-pro-sum",
+        {
+          userContent: prompt,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setResumeData((prev) => ({
+        ...prev,
+        professional_summary: response.data.enhancedContent,
+      }));
+    } catch (error) {
+      AxiosError(error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -24,9 +57,17 @@ const ProfessionalSummaryForm = ({
             Add summary for your remsume here
           </p>
         </div>
-        <button className="flex items-center gap-2 px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disabled:opacity-50">
-          <Sparkles className="size-4" />
-          AI Enhance
+        <button
+          disabled={isGenerating}
+          onClick={generateSummarry}
+          className="flex items-center gap-2 px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disabled:opacity-50"
+        >
+          {isGenerating ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Sparkles className="size-4" />
+          )}
+          {isGenerating ? "Thinking..." : "AI Enhance"}
         </button>
       </div>
       <div className="mt-6">

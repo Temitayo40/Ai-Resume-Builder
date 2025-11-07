@@ -97,7 +97,13 @@ export class ResumeController {
   ) {
     const userId = req.userId as string;
     const { resumeId, resumeData, removeBackground } = body;
-    const resumeDataCopy = JSON.parse(JSON.stringify(resumeData));
+
+    let resumeDataCopy;
+    if (resumeDataCopy === '') {
+      resumeDataCopy = await JSON.parse(resumeData);
+    } else {
+      resumeDataCopy = structuredClone(resumeData);
+    }
     try {
       if (file) {
         const response = await this.imagekitService.uploadFile(
@@ -105,7 +111,7 @@ export class ResumeController {
           removeBackground,
         );
         const { url } = response;
-        resumeDataCopy.image = url;
+        resumeDataCopy.imag = url;
       }
       const resume = await this.resumeService.updateResume(
         userId,

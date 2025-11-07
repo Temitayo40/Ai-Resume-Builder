@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 const AxiosError = (error: unknown): void => {
   if (axios.isAxiosError(error)) {
     const backendMessage = error.response?.data?.message;
-    toast.error(backendMessage || "An unexpected error occurred");
+    toast.error(backendMessage || error.message);
   } else {
     toast.error("Something went wrong");
   }
