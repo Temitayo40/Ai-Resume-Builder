@@ -64,7 +64,7 @@ const MinimalTemplate = ({ data, accentColor }: TemplateProps) => {
       )}
 
       {/* Projects */}
-      {data.project && data.project.length > 0 && (
+      {data.projects && data.projects.length > 0 && (
         <section className="mb-10">
           <h2
             className="text-sm uppercase tracking-widest mb-6 font-medium"
@@ -74,7 +74,7 @@ const MinimalTemplate = ({ data, accentColor }: TemplateProps) => {
           </h2>
 
           <div className="space-y-4">
-            {data.project.map((proj, index) => (
+            {data.projects.map((proj, index) => (
               <div
                 key={index}
                 className="flex flex-col gap-2 justify-between items-baseline"

@@ -24,7 +24,7 @@ const ProfessionalSummaryForm = ({
   const generateSummarry = async () => {
     try {
       setIsGenerating(true);
-      const prompt = `enhance my professional summary "${data}"`;
+      const prompt = `enhance my professional summary '${data}'`;
       const response = await api.post(
         "/api/ai/enhance-pro-sum",
         {

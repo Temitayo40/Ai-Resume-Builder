@@ -22,6 +22,12 @@ export class ResumeService {
   async getResumeById(userId: string, resumeId: string) {
     const resume = await this.prisma.resume.findFirst({
       where: { userId, id: resumeId },
+      include: {
+        personal_info: true,
+        experience: true,
+        projects: true,
+        education: true,
+      },
     });
 
     if (!resume) throw new BadRequestException('Resume not found');
@@ -45,14 +51,26 @@ export class ResumeService {
   }
 
   async updateResume(userId: string, resumeId: string, resumeData: any) {
-    const updatedResume = await this.prisma.resume.update({
-      where: {
-        id: resumeId,
-        userId: userId,
-      },
-      data: resumeData,
+    const resume = await this.prisma.resume.findFirst({
+      where: { id: resumeId, userId },
     });
 
-    return updatedResume;
+    if (!resume) {
+      throw new BadRequestException('Resume not found or unauthorized');
+    }
+
+    const updatedPersonalInfo = await this.prisma.personalInfo.upsert({
+      where: { resumeId },
+      update: resumeData,
+      create: {
+        resumeId,
+        ...resumeData,
+      },
+    });
+
+    return {
+      message: 'Personal information updated successfully',
+      personalInfo: updatedPersonalInfo,
+    };
   }
 }

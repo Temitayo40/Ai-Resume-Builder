@@ -26,7 +26,7 @@ interface Field {
 }
 
 const PersonalInfoForm = ({
-  data,
+  data = {} as PersonalInfo,
   onChange,
   removeBackground,
   setRemoveBackground,
@@ -86,6 +86,18 @@ const PersonalInfoForm = ({
     },
   ];
 
+  const getImageSrc = () => {
+    if (!data?.image) return "";
+    if (typeof data.image === "string") return data.image;
+    try {
+      return URL.createObjectURL(data.image);
+    } catch {
+      return "";
+    }
+  };
+
+  const imageSrc = getImageSrc();
+
   return (
     <div>
       <h3 className="text-lg font-semibold text-gray-900">
@@ -95,13 +107,9 @@ const PersonalInfoForm = ({
 
       <div className="flex items-center gap-2">
         <label htmlFor="user-image">
-          {data.image ? (
+          {data?.image ? (
             <img
-              src={
-                typeof data.image === "string"
-                  ? data.image
-                  : URL.createObjectURL(data.image)
-              }
+              src={imageSrc}
               alt="user-image"
               className="w-16 h-16 rounded-full object-cover mt-5 ring ring-slate-300 hover:opacity-80 cursor-pointer"
             />
@@ -121,7 +129,7 @@ const PersonalInfoForm = ({
           />
         </label>
 
-        {typeof data.image === "object" && (
+        {typeof data?.image === "object" && (
           <div className="flex flex-col gap-1 pl-4 text-sm">
             <p>Remove Background</p>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -140,6 +148,8 @@ const PersonalInfoForm = ({
 
       {fields.map((field) => {
         const Icon = field.icon;
+        const value = (data?.[field.key] as unknown as string) || "";
+
         return (
           <div key={field.key} className="space-y-1 mt-5">
             <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
@@ -150,7 +160,7 @@ const PersonalInfoForm = ({
 
             <input
               type={field.type}
-              value={(data[field.key] as unknown as string) || ""}
+              value={value}
               onChange={(e) => handleChange(field.key, e.target.value)}
               className="mt-1 w-full px-3 py-2 border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
               placeholder={`Enter your ${field.label.toLowerCase()}`}

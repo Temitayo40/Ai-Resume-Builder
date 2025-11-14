@@ -16,7 +16,6 @@ import {
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  dummyResumeData,
   type Education,
   type PersonalInfo,
   type ResumeData,
@@ -38,6 +37,7 @@ import toast from "react-hot-toast";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
+
   const { token } = useSelector((state: RootState) => state.auth);
   const initialResume: ResumeData = {
     id: "",
@@ -55,7 +55,7 @@ const ResumeBuilder = () => {
     professional_summary: "",
     experience: [],
     education: [],
-    project: [],
+    projects: [],
     skills: [],
     template: "classic",
     accent_color: "#3882f6",
@@ -63,23 +63,6 @@ const ResumeBuilder = () => {
   };
 
   const [resumeData, setResumeData] = useState<ResumeData>(initialResume);
-
-  const loadExistingResume = async () => {
-    try {
-      const { data } = await api.get("/api/resumes/get" + resumeId, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (data.resume) {
-        setResumeData(data.resume);
-        document.title = data.resume.title;
-      }
-    } catch (error) {
-      AxiosError(error);
-    }
-  };
 
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
 
@@ -96,10 +79,22 @@ const ResumeBuilder = () => {
 
   const activeSection = sections[activeSectionIndex];
 
-  useEffect(() => {
-    loadExistingResume();
-  }, []);
+  const loadExistingResume = async () => {
+    try {
+      const { data } = await api.get("/api/resumes/get/" + resumeId, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      if (data.resume) {
+        setResumeData(data.resume);
+        document.title = data.resume.title;
+      }
+    } catch (error) {
+      AxiosError(error);
+    }
+  };
   const changeResumeVisibility = async () => {
     try {
       const formData = new FormData();
@@ -109,7 +104,7 @@ const ResumeBuilder = () => {
         JSON.stringify({ public: !resumeData.public })
       );
 
-      const { data } = await api.patch("/api/resumes/update" + formData, {
+      const { data } = await api.patch("/api/resumes/update", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -123,8 +118,9 @@ const ResumeBuilder = () => {
   };
 
   const handleShare = () => {
+    if (!resumeData.id) return;
     const frontendUrl = window.location.href.split("/app")[0];
-    const resumeUrl = `${frontendUrl}/view/${resumeData._id}`;
+    const resumeUrl = `${frontendUrl}/view/${resumeData.id}`;
 
     navigator.share({ url: resumeUrl, text: "My Resume" });
   };
@@ -140,7 +136,6 @@ const ResumeBuilder = () => {
         typeof resumeData.personal_info.image === "object" &&
         updatedResumeData.personal_info
       ) {
-        // delete via a cast to any to avoid TypeScript delete operand restrictions
         delete (updatedResumeData.personal_info as any).image;
       }
       const formData = new FormData();
@@ -156,6 +151,7 @@ const ResumeBuilder = () => {
 
       const { data } = await api.patch("/api/resumes/update", formData, {
         headers: {
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -166,6 +162,10 @@ const ResumeBuilder = () => {
       AxiosError(error);
     }
   };
+
+  useEffect(() => {
+    if (token) loadExistingResume();
+  }, [token]);
 
   return (
     <div>
@@ -298,11 +298,11 @@ const ResumeBuilder = () => {
                 )}
                 {activeSection.id === "projects" && (
                   <ProjectForm
-                    data={resumeData.project}
+                    data={resumeData.projects}
                     onChange={(data) =>
                       setResumeData((prev) => ({
                         ...prev,
-                        project: data,
+                        projects: data,
                       }))
                     }
                   />
@@ -321,7 +321,7 @@ const ResumeBuilder = () => {
               </div>
               <button
                 onClick={() => {
-                  toast.promise(saveResume, {
+                  toast.promise(saveResume(), {
                     loading: "Saving...",
                     success: "Done!",
                     error: "Something went wrong",
@@ -341,7 +341,7 @@ const ResumeBuilder = () => {
                 {resumeData.public && (
                   <button
                     onClick={handleShare}
-                    className="flex items-center p-2 рх-4 gap-2 text-xs bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-lg ring-blue-300 hover: :ring transition-colors"
+                    className="flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-lg ring-blue-300 hover: :ring transition-colors"
                   >
                     <Share2Icon className="size-4" /> Share
                   </button>

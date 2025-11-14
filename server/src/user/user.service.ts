@@ -95,6 +95,12 @@ export class UserService {
   async getUserResumes(userId: string) {
     const resumes = await this.prisma.resume.findMany({
       where: { userId },
+      include: {
+        personal_info: true,
+        experience: true,
+        projects: true,
+        education: true,
+      },
     });
     return resumes;
   }

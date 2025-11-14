@@ -26,6 +26,8 @@ const Login = () => {
       const { data } = await api.post(`/api/users/${state}`, formData);
       dispatch(login(data));
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
       toast.success(data.message);
       // navigate("/");
     } catch (error) {

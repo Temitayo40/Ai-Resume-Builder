@@ -11,7 +11,6 @@ const ProjectForm = ({ data, onChange }: ProjectFormProps) => {
       type: "",
       description: "",
     };
-
     onChange([...data, newProject]);
   };
 
@@ -51,7 +50,7 @@ const ProjectForm = ({ data, onChange }: ProjectFormProps) => {
       </div>
 
       <div className="space-y-4">
-        {data.map((project, index) => (
+        {data?.map((project, index) => (
           <div
             key={index}
             className="p-4 border border-gray-200 rounded-lg space-y-3"
@@ -85,7 +84,7 @@ const ProjectForm = ({ data, onChange }: ProjectFormProps) => {
                 rows={4}
                 value={project.description || ""}
                 onChange={(e) =>
-                  updateProject(index, "desription", e.target.value)
+                  updateProject(index, "description", e.target.value)
                 }
                 placeholder="Describe your project..."
                 className="px-3 py-2 text-sm rounded-lg resize-none"

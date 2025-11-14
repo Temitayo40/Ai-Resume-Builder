@@ -60,7 +60,7 @@ export interface ResumeData {
   professional_summary: string;
   experience: Experience[];
   education: Education[];
-  project: Project[];
+  projects: Project[];
   skills: string[];
   template: string;
   accent_color: string;

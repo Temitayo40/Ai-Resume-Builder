@@ -93,7 +93,7 @@ const EducationForm = ({ data = [], onChange }: ExperienceFormProps) => {
                   className="px-3 py-2 text-sm"
                 />
                 <input
-                  type="month"
+                  type="text"
                   value={education.field || ""}
                   onChange={(e) =>
                     updateEducation(index, "field", e.target.value)
@@ -102,11 +102,12 @@ const EducationForm = ({ data = [], onChange }: ExperienceFormProps) => {
                   className="px-3 py-2 text-sm "
                 />
                 <input
-                  type="text"
+                  type="month"
                   value={education.graduation_date || ""}
                   onChange={(e) =>
                     updateEducation(index, "graduation_date", e.target.value)
                   }
+                  placeholder="graduation date"
                   className="px-3 py-2 text-sm"
                 />
               </div>

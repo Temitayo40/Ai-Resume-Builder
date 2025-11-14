@@ -17,7 +17,7 @@ export class GeminiController {
   @UseGuards(JwtAuthGuard)
   async enhanceProfessionalSummary(@Body() body: { userContent: string }) {
     const { userContent } = body;
-    if (userContent) throw new BadRequestException('Missing required fields');
+    if (!userContent) throw new BadRequestException('Missing required fields');
 
     try {
       const enhancedContent =
@@ -37,7 +37,7 @@ export class GeminiController {
   @UseGuards(JwtAuthGuard)
   async enhanceJobDescription(@Body() body: { userContent: string }) {
     const { userContent } = body;
-    if (userContent) throw new BadRequestException('Missing required fields');
+    if (!userContent) throw new BadRequestException('Missing required fields');
 
     try {
       const enhancedContent =
@@ -62,7 +62,7 @@ export class GeminiController {
     const { resumeText, title } = body;
     const userId = req.userId as string;
 
-    if (resumeText) throw new BadRequestException('Missing required fields');
+    if (!resumeText) throw new BadRequestException('Missing required fields');
 
     try {
       const enhancedContent = await this.geminiService.uploadResume(
