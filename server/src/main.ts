@@ -5,7 +5,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin:
-      'https://ai-resume-builder-p0xd2ufge-temitayo40s-projects.vercel.app/',
+      'https://ai-resume-builder-p0xd2ufge-temitayo40s-projects.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
