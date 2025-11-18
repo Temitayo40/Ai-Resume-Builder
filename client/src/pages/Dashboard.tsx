@@ -15,12 +15,11 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../app/store";
 import api from "../configs/api";
 import toast from "react-hot-toast";
-import axios from "axios";
 import pdfToText from "react-pdftotext";
 import AxiosError from "../configs/axiosError";
 
 const Dashboard = () => {
-  const { user, token } = useSelector((state: RootState) => state.auth);
+  const { token } = useSelector((state: RootState) => state.auth);
 
   const colors = ["#9333ea", "#d97706", "#dc2626", "#0284c7", "#16a34a"];
 

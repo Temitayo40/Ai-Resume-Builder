@@ -1,13 +1,14 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { dummyResumeData, type Resume } from "../assets/assets";
+import { type ResumeData } from "../assets/assets";
 import { ArrowLeftIcon, Loader } from "lucide-react";
 import ResumePreview from "../components/ResumePreview";
 import api from "../configs/api";
+import AxiosError from "../configs/axiosError";
 
 const Preview = () => {
   const { resumeId } = useParams();
-  const [resumeData, setResumeData] = React.useState<Resume>();
+  const [resumeData, setResumeData] = React.useState<ResumeData>();
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   const loadResume = async () => {
@@ -15,7 +16,7 @@ const Preview = () => {
       const { data } = await api.get("/api/resumes/public/" + resumeId);
       setResumeData(data.resume);
     } catch (error) {
-      console.log(error.message);
+      AxiosError(error);
     } finally {
       setIsLoading(false);
     }

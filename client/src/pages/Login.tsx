@@ -5,13 +5,11 @@ import { useDispatch } from "react-redux";
 import { login } from "../app/features/authSlice";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const query = new URLSearchParams(window.location.search);
   const dispatch = useDispatch();
   const queryUrl = query.get("state");
-  const navigate = useNavigate();
 
   const [state, setState] = React.useState(queryUrl || "login");
   const [isLoading, setIsLoading] = React.useState(false);
