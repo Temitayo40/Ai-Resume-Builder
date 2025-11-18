@@ -9,6 +9,7 @@ import {
   FileText,
   FolderIcon,
   GraduationCap,
+  LoaderCircleIcon,
   Share2Icon,
   Sparkles,
   User,
@@ -68,6 +69,8 @@ const ResumeBuilder = () => {
 
   const [removeBackground, setRemoveBackground] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const sections = [
     { id: "personal", name: "Personal Info", icon: User },
     { id: "summary", name: "Summary ", icon: FileText },
@@ -80,6 +83,7 @@ const ResumeBuilder = () => {
   const activeSection = sections[activeSectionIndex];
 
   const loadExistingResume = async () => {
+    setIsLoading(true);
     try {
       const { data } = await api.get("/api/resumes/get/" + resumeId, {
         headers: {
@@ -91,11 +95,15 @@ const ResumeBuilder = () => {
         setResumeData(data.resume);
         document.title = data.resume.title;
       }
+      setIsLoading(false);
     } catch (error) {
       AxiosError(error);
+      setIsLoading(false);
     }
   };
   const changeResumeVisibility = async () => {
+    setIsLoading(true);
+
     try {
       const formData = new FormData();
       formData.append("resumeId", resumeId as string);
@@ -111,8 +119,11 @@ const ResumeBuilder = () => {
       });
 
       setResumeData({ ...resumeData, public: !resumeData.public });
+      setIsLoading(false);
+
       toast.success(data.message);
     } catch (error) {
+      setIsLoading(false);
       AxiosError(error);
     }
   };
@@ -130,6 +141,8 @@ const ResumeBuilder = () => {
   };
 
   const saveResume = async () => {
+    setIsLoading(true);
+
     try {
       const updatedResumeData = structuredClone(resumeData);
       if (
@@ -157,9 +170,12 @@ const ResumeBuilder = () => {
       });
 
       setResumeData(data.resume);
+      setIsLoading(false);
+
       toast.success(data.message);
     } catch (error) {
       AxiosError(error);
+      setIsLoading(false);
     }
   };
 
@@ -327,9 +343,12 @@ const ResumeBuilder = () => {
                     error: "Something went wrong",
                   });
                 }}
-                className="bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-480 transition-all rounded-md px-6 py-2 mt-6 text-sm"
+                className="bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-480 transition-all rounded-md px-6 py-2 mt-6 text-sm flex items-center justify-center gap-2"
               >
-                Save Changes
+                Save Changes{" "}
+                {isLoading && (
+                  <LoaderCircleIcon className="animate-spin size-4 text-green-600" />
+                )}
               </button>
             </div>
           </div>

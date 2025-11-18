@@ -98,6 +98,7 @@ const Dashboard = () => {
   };
 
   const editResume = async (event: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
     try {
       event?.preventDefault();
       const { data } = await api.patch(
@@ -116,10 +117,12 @@ const Dashboard = () => {
       );
       setTitle("");
       setEditResumeId("");
+      setIsLoading(false);
       console.log(data, "data here");
       toast.success(data.message);
     } catch (error) {
       AxiosError(error);
+      setIsLoading(false);
     }
   };
 
@@ -249,8 +252,11 @@ const Dashboard = () => {
               className="w-full px-4 py-2 mb-4 focus:border-green-600 ring-green-600 required"
             />
 
-            <button className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
-              Create Resume
+            <button className="flex items-center justify-center gap-2 w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+              Create Resume{" "}
+              {isLoading && (
+                <LoaderCircleIcon className="animate-spin size-4 text-white" />
+              )}
             </button>
             <XIcon
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 cursor-pointer transition-colors"
@@ -350,8 +356,11 @@ const Dashboard = () => {
               className="w-full px-4 py-2 mb-4 focus:border-green-600 ring-green-600 required"
             />
 
-            <button className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
-              Update Resume
+            <button className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+              Update Resume{" "}
+              {isLoading && (
+                <LoaderCircleIcon className="animate-spin size-4 text-white" />
+              )}
             </button>
             <XIcon
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 cursor-pointer transition-colors"

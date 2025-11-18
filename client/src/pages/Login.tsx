@@ -1,4 +1,4 @@
-import { Lock, Mail, User2Icon } from "lucide-react";
+import { Loader2, Lock, Mail, User2Icon } from "lucide-react";
 import React from "react";
 import api from "../configs/api";
 import { useDispatch } from "react-redux";
@@ -14,6 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [state, setState] = React.useState(queryUrl || "login");
+  const [isLoading, setIsLoading] = React.useState(false);
   const [formData, setFormData] = React.useState({
     name: "",
     email: "",
@@ -22,9 +23,11 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const { data } = await api.post(`/api/users/${state}`, formData);
       dispatch(login(data));
+      setIsLoading(false);
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -99,9 +102,10 @@ const Login = () => {
         </div>
         <button
           type="submit"
-          className="mt-2 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity"
+          className="flex items-center justify-center gap-2 mt-2 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity"
         >
-          {state === "login" ? "Login" : "Sign up"}
+          {state === "login" ? "Login " : "Sign up "}
+          {isLoading && <Loader2 className="size-4 animate-spin" />}
         </button>
         <p
           onClick={() =>
