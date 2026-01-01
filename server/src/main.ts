@@ -3,14 +3,17 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({
-    origin:
-      'https://ai-resume-builder-p0xd2ufge-temitayo40s-projects.vercel.app',
-          'https://ai-resume-builder-six-pi.vercel.app',
 
+  app.enableCors({
+    origin: [
+      'http://localhost:5173',
+      'https://ai-resume-builder-six-pi.vercel.app',
+      'https://ai-resume-builder-p0xd2ufge-temitayo40s-projects.vercel.app',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 
