@@ -6,6 +6,8 @@ async function bootstrap() {
   app.enableCors({
     origin:
       'https://ai-resume-builder-p0xd2ufge-temitayo40s-projects.vercel.app',
+          'https://ai-resume-builder-six-pi.vercel.app',
+
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
